@@ -18,7 +18,8 @@ export const Home: React.FC = () => {
 
   const handleAgendar = () => {
     if (dataSelecionada) {
-      navigate('/confirmacao', { state: { dataSelecionada } });
+      // Usar query param para maior robustez na navegação
+      navigate(`/confirmacao?data=${dataSelecionada}`);
     }
   };
 

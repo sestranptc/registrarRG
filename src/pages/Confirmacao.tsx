@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Header } from '../components/Layout/Header';
 import { Footer } from '../components/Layout/Footer';
 import { FormularioAgendamento } from '../components/Formulario/FormularioAgendamento';
@@ -10,9 +10,11 @@ import { TransicaoPagina } from '../components/Animacoes/TransicaoPagina';
 export const Confirmacao: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { salvarAgendamento, gerarProximaSenha, verificarAgendamentoExistente } = useAgendamentos();
   
-  const dataSelecionada = location.state?.dataSelecionada;
+  // Tenta pegar do state (legado) ou do query param (novo)
+  const dataSelecionada = location.state?.dataSelecionada || searchParams.get('data');
 
   if (!dataSelecionada) {
     navigate('/');

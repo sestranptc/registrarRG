@@ -88,7 +88,7 @@ export const DiaCalendario: React.FC<DiaCalendarioProps> = ({
     <button
       ref={diaRef}
       onClick={aoClicarDia}
-      disabled={ehDiaPassado || ehFimDeSemana || !ehDiaDisponivel || vagasRestantes === 0}
+      disabled={ehDiaPassado || !ehDiaDisponivel || vagasRestantes === 0}
       className={obterClasseDia()}
     >
       <span>{data.getDate()}</span>
