@@ -36,7 +36,7 @@ export const obterDiasDisponiveis = (mesAtual: Date, diasAntecedenciaMinima: num
     
     // Regra: Apenas sábados (6) são permitidos
     // E a data não pode estar na lista de feriados
-    if (dataAtual.getDay() === 6 && !CONFIG.FERIADOS.includes(dataString)) {
+    if (dataAtual.getDay() === 6 && !(CONFIG.FERIADOS as readonly string[]).includes(dataString)) {
       diasDisponiveis.push(dataString);
     }
     
