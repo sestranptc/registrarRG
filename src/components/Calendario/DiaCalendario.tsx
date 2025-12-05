@@ -41,7 +41,8 @@ export const DiaCalendario: React.FC<DiaCalendarioProps> = ({
   const obterClasseDia = (): string => {
     let classes = 'w-14 h-14 rounded-lg flex flex-col items-center justify-center text-sm font-medium transition-all duration-200 ';
     
-    if (ehDiaPassado || ehFimDeSemana) {
+    // Dias passados ou fins de semana (exceto se for um dia disponível, ex: Sábado permitido)
+    if (ehDiaPassado || (ehFimDeSemana && !ehDiaDisponivel)) {
       classes += 'bg-gray-100 text-gray-400 cursor-not-allowed ';
     } else if (estaSelecionado) {
       classes += 'bg-green-600 text-white shadow-lg ';
@@ -50,6 +51,7 @@ export const DiaCalendario: React.FC<DiaCalendarioProps> = ({
     } else if (ehDiaDisponivel && vagasRestantes === 0) {
       classes += 'bg-red-100 text-red-800 cursor-not-allowed ';
     } else {
+      // Dias úteis não disponíveis (ou fins de semana não disponíveis que caíram aqui por algum motivo)
       classes += 'bg-white text-gray-700 hover:bg-gray-50 cursor-pointer ';
     }
     
@@ -61,7 +63,9 @@ export const DiaCalendario: React.FC<DiaCalendarioProps> = ({
   };
 
   const obterIndicadorVagas = () => {
-    if (!ehDiaDisponivel || ehDiaPassado || ehFimDeSemana) return null;
+    // Mostra indicador se estiver disponível e não for passado
+    // Removemos a restrição de fim de semana para permitir sábados
+    if (!ehDiaDisponivel || ehDiaPassado) return null;
     
     if (vagasRestantes === 0) {
       return <div className="w-2 h-2 bg-red-500 rounded-full mt-1"></div>;
@@ -73,7 +77,9 @@ export const DiaCalendario: React.FC<DiaCalendarioProps> = ({
   };
 
   const aoClicarDia = () => {
-    if (!ehDiaPassado && !ehFimDeSemana && ehDiaDisponivel && vagasRestantes > 0) {
+    // Permite clicar se não for passado, estiver disponível e tiver vagas
+    // Removemos a restrição de !ehFimDeSemana para permitir sábados
+    if (!ehDiaPassado && ehDiaDisponivel && vagasRestantes > 0) {
       aoClicar(data);
     }
   };

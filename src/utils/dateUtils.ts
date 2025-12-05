@@ -1,3 +1,5 @@
+import { CONFIG } from '../config/config';
+
 export const formatarData = (dataString: string): string => {
   const data = new Date(dataString);
   return data.toLocaleDateString('pt-BR', {
@@ -30,9 +32,14 @@ export const obterDiasDisponiveis = (mesAtual: Date, diasAntecedenciaMinima: num
   let dataAtual = new Date(dataInicial);
   
   while (dataAtual <= dataFinal) {
-    if (dataAtual.getDay() !== 0 && dataAtual.getDay() !== 6) { // Excluir sábados e domingos
-      diasDisponiveis.push(dataAtual.toISOString().split('T')[0]);
+    const dataString = dataAtual.toISOString().split('T')[0];
+    
+    // Regra: Apenas sábados (6) são permitidos
+    // E a data não pode estar na lista de feriados
+    if (dataAtual.getDay() === 6 && !CONFIG.FERIADOS.includes(dataString)) {
+      diasDisponiveis.push(dataString);
     }
+    
     dataAtual.setDate(dataAtual.getDate() + 1);
   }
   
