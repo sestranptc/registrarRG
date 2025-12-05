@@ -68,3 +68,6 @@ SMTP_PASS=sua-senha-de-app
 - GSAP (Animações)
 - Zustand (Gerenciamento de Estado)
 - EmailJS / Nodemailer
+
+## Licença
+Este projeto é de uso exclusivo da Prefeitura Municipal de Patrocínio-MG.
