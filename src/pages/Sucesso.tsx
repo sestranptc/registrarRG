@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Header } from '../components/Layout/Header';
 import { Footer } from '../components/Layout/Footer';
@@ -11,6 +11,7 @@ export const Sucesso: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const isSendingRef = useRef(false);
   
   const state = (location.state || {}) as {
     agendamento: Agendamento;
@@ -23,33 +24,43 @@ export const Sucesso: React.FC = () => {
     return null;
   }
 
+  // Dados para autenticação
+  // Constrói a URL de validação para enviar no email
+  const baseUrl = window.location.href.split('#')[0];
+  const validationLink = `${baseUrl}#/verificacao/${agendamento.id}`;
+
   const handleImprimir = () => {
     window.print();
   };
 
   const [emailEnviado, setEmailEnviado] = useState(false);
+  const [erroEmail, setErroEmail] = useState<string | null>(null);
 
   useEffect(() => {
-    if (agendamento && !emailEnviado && !isSendingEmail) {
+    if (agendamento && !emailEnviado && !isSendingRef.current) {
       handleEnviarEmail();
     }
   }, [agendamento]);
 
   const handleEnviarEmail = async () => {
-    if (isSendingEmail || emailEnviado) return;
+    if (isSendingRef.current || emailEnviado) return;
 
+    isSendingRef.current = true;
     setIsSendingEmail(true);
+    setErroEmail(null);
     try {
-      const sucesso = await enviarEmailConfirmacao(agendamento, dataFormatada);
+      // Agora passamos o validationLink para a função de envio
+      const sucesso = await enviarEmailConfirmacao(agendamento, dataFormatada, validationLink);
       if (sucesso) {
         setEmailEnviado(true);
-        // Removido alert para evitar bloqueio da interface
       }
     } catch (error) {
       console.error('Erro ao enviar email:', error);
-      alert(`Erro ao enviar email: ${error}`);
+      const msg = error instanceof Error ? error.message : String(error);
+      setErroEmail(`Não foi possível enviar o email: ${msg}. (Verifique se o servidor local está rodando se estiver em ambiente de desenvolvimento)`);
     } finally {
       setIsSendingEmail(false);
+      isSendingRef.current = false;
     }
   };
 
@@ -82,7 +93,35 @@ export const Sucesso: React.FC = () => {
                   <p className="text-sm text-green-600">Guarde este número!</p>
                 </div>
               </div>
+
+              {/* Código de Autenticação (Selo de Segurança) */}
+              <div className="mb-8 flex flex-col items-center">
+                <div className="bg-blue-50 border-2 border-blue-100 rounded-xl p-6 max-w-md w-full relative overflow-hidden">
+                  <div className="absolute top-0 right-0 -mt-2 -mr-2 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  
+                  <div className="text-center relative z-10">
+                    <p className="text-xs uppercase tracking-wider text-blue-600 font-bold mb-2">Autenticação Digital</p>
+                    <div className="bg-white border border-blue-200 rounded-lg px-4 py-3 font-mono text-lg text-gray-800 font-bold tracking-wide select-all shadow-sm mb-3 break-all">
+                      {agendamento.id}
+                    </div>
+                    <p className="text-xs text-blue-500">
+                      Um link de validação segura foi enviado para seu e-mail.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {erroEmail && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative mb-6 text-sm no-print" role="alert">
+                <strong className="font-bold">Erro no envio: </strong>
+                <span className="block sm:inline">{erroEmail}</span>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="space-y-4">

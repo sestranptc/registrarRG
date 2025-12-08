@@ -2,7 +2,7 @@ import { Agendamento } from '../types';
 import { CONFIG } from '../config/config';
 import emailjs from '@emailjs/browser';
 
-export const enviarEmailConfirmacao = async (agendamento: Agendamento, dataFormatada: string): Promise<boolean> => {
+export const enviarEmailConfirmacao = async (agendamento: Agendamento, dataFormatada: string, validationLink?: string): Promise<boolean> => {
   try {
     const isProduction = import.meta.env.PROD;
 
@@ -18,7 +18,8 @@ export const enviarEmailConfirmacao = async (agendamento: Agendamento, dataForma
         horario: agendamento.horario,
         cpf: agendamento.cpf,
         telefone: agendamento.telefone,
-        local: CONFIG.INFORMACOES_PREFEITURA.endereco
+        local: CONFIG.INFORMACOES_PREFEITURA.endereco,
+        link_validacao: validationLink || ''
       };
 
       const response = await emailjs.send(
@@ -67,6 +68,17 @@ export const enviarEmailConfirmacao = async (agendamento: Agendamento, dataForma
             </div>
           </div>
 
+          ${validationLink ? `
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${validationLink}" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+              Validar Agendamento
+            </a>
+            <p style="font-size: 12px; color: #666; margin-top: 10px;">
+              Clique no botão acima para confirmar a autenticidade deste documento.
+            </p>
+          </div>
+          ` : ''}
+
           <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 15px; margin-top: 20px;">
             <h3 style="color: #1e40af; margin-top: 0;">Documentos Necessários:</h3>
             <ul style="color: #1e3a8a; padding-left: 20px;">
@@ -105,6 +117,9 @@ export const enviarEmailConfirmacao = async (agendamento: Agendamento, dataForma
     }
   } catch (error: any) {
     console.error('Erro ao enviar email:', error);
-    throw error?.message || 'Erro desconhecido ao enviar email';
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error(String(error) || 'Erro desconhecido ao enviar email');
   }
 };
