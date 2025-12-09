@@ -57,7 +57,7 @@ export const Sucesso: React.FC = () => {
     } catch (error) {
       console.error('Erro ao enviar email:', error);
       const msg = error instanceof Error ? error.message : String(error);
-      setErroEmail(`Não foi possível enviar o email: ${msg}. (Verifique se o servidor local está rodando se estiver em ambiente de desenvolvimento)`);
+      setErroEmail(`Não foi possível enviar o email: ${msg}`);
     } finally {
       setIsSendingEmail(false);
       isSendingRef.current = false;

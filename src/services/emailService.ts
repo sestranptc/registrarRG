@@ -116,10 +116,17 @@ export const enviarEmailConfirmacao = async (agendamento: Agendamento, dataForma
       return true;
     }
   } catch (error: any) {
-    console.error('Erro ao enviar email:', error);
+    console.error('Erro detalhado ao enviar email:', error);
+    
+    // Tratamento específico para erros do EmailJS
+    if (error && typeof error === 'object' && 'text' in error) {
+      throw new Error(`Erro EmailJS: ${error.text}`);
+    }
+    
     if (error instanceof Error) {
       throw error;
     }
+    
     throw new Error(String(error) || 'Erro desconhecido ao enviar email');
   }
 };
