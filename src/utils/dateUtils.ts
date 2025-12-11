@@ -34,11 +34,16 @@ export const obterDiasDisponiveis = (mesAtual: Date, diasAntecedenciaMinima: num
   while (dataAtual <= dataFinal) {
     const dataString = dataAtual.toISOString().split('T')[0];
     
-    // Regra: Apenas sábados (6) são permitidos
+    // TODAS AS DATAS BLOQUEADAS
+    // Para reativar, descomente o código abaixo:
+    /*
+    // Regra: Dias úteis (Segunda a Sexta)
     // E a data não pode estar na lista de feriados
-    if (dataAtual.getDay() === 6 && !(CONFIG.FERIADOS as readonly string[]).includes(dataString)) {
+    const diaSemana = dataAtual.getDay();
+    if (diaSemana !== 0 && diaSemana !== 6 && !(CONFIG.FERIADOS as readonly string[]).includes(dataString)) {
       diasDisponiveis.push(dataString);
     }
+    */
     
     dataAtual.setDate(dataAtual.getDate() + 1);
   }

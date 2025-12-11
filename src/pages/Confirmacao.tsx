@@ -48,6 +48,33 @@ export const Confirmacao: React.FC = () => {
         dataAgendamento: dataSelecionada
       };
 
+      // Enviar para o backend (PostgreSQL)
+      try {
+        const response = await fetch('http://localhost:3001/usuarios', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            nome: dados.nome,
+            email: dados.email,
+            cpf: dados.cpf,
+            dataNascimento: dados.dataNascimento,
+            telefone: dados.telefone
+          }),
+        });
+
+        if (!response.ok) {
+          console.error('Erro ao salvar no banco de dados:', await response.text());
+          // Não vamos bloquear o fluxo se o banco falhar, pois o LocalStorage ainda funciona
+          // Mas em produção idealmente deveríamos tratar isso
+        } else {
+          console.log('Usuário salvo no banco com sucesso!');
+        }
+      } catch (dbError) {
+        console.error('Erro de conexão com o backend:', dbError);
+      }
+
       salvarAgendamento(agendamento);
       
       navigate('/sucesso', { 

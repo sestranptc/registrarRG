@@ -54,7 +54,16 @@ export const Home: React.FC = () => {
           />
           
           <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 max-w-2xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-white">
+            {/* Aviso de Mutirão */}
+            <div className="mb-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded shadow-md text-left">
+              <p className="font-bold text-lg mb-1">⚠️ Agendamento Temporariamente Suspenso</p>
+              <p>
+                Aguarde o <strong>Mutirão</strong> ser liberado para realizar o seu agendamento. 
+                Fique atento às redes sociais da Prefeitura para mais informações sobre as novas datas.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-white opacity-50 pointer-events-none grayscale">
               <div className="text-center">
                 <div className="text-2xl font-bold">60</div>
                 <div className="text-sm opacity-90">Vagas por dia</div>
