@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import gsap from 'gsap';
 import { HeroAnimation } from '../components/Animacoes/HeroAnimation';
 import { Calendario } from '../components/Calendario/Calendario';
 import { Header } from '../components/Layout/Header';
@@ -31,13 +32,11 @@ export const Home: React.FC = () => {
 
   useEffect(() => {
     if (dataSelecionada && ctaRef.current) {
-      import('gsap').then(({ default: gsap }) => {
-        gsap.fromTo(
-          ctaRef.current,
-          { scale: 0.96, boxShadow: '0 0 0 rgba(0,0,0,0)' },
-          { scale: 1, boxShadow: '0 10px 30px rgba(0,0,0,0.15)', duration: 0.4, ease: 'power2.out' }
-        );
-      });
+      gsap.fromTo(
+        ctaRef.current,
+        { scale: 0.96, boxShadow: '0 0 0 rgba(0,0,0,0)' },
+        { scale: 1, boxShadow: '0 10px 30px rgba(0,0,0,0.15)', duration: 0.4, ease: 'power2.out' }
+      );
       ctaRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [dataSelecionada]);
