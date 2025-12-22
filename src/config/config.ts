@@ -7,13 +7,13 @@ export const CONFIG = {
   HORARIOS_ATENDIMENTO: [
     '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
     '11:00', '11:30', '13:30', '14:00', '14:30', '15:00',
-    '15:30', '16:00', '16:30'
+    '15:30',  
   ],
   INFORMACOES_PREFEITURA: {
     nome: 'Prefeitura Municipal de Patrocínio-MG',
-    endereco: 'Praça Barão do Patrocínio, 100 - Centro, Patrocínio - MG, 38740-000',
-    telefone: '(34) 3831-8600',
-    horarioFuncionamento: 'Segunda a Sexta, 08:00 às 17:00'
+    endereco: 'Av. João Alves do Nascimento, 1452 - Cidade Jardim, Patrocínio - MG, 38747-056',
+    telefone: '(34) 3839-1800',
+    horarioFuncionamento: 'Segunda a Sábado, 08:00 às 15:30'
   },
   STORAGE_KEYS: {
     AGENDAMENTOS: 'agendamentos_rg_patrocinio',
