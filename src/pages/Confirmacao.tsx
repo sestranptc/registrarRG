@@ -15,6 +15,7 @@ export const Confirmacao: React.FC = () => {
   
   // Tenta pegar do state (legado) ou do query param (novo)
   const dataSelecionada = location.state?.dataSelecionada || searchParams.get('data');
+  const horarioSelecionado = location.state?.horarioSelecionado || searchParams.get('horario');
 
   if (!dataSelecionada) {
     navigate('/');
@@ -29,22 +30,19 @@ export const Confirmacao: React.FC = () => {
         return;
       }
 
-      const senha = gerarProximaSenha();
-      const horarios = [
-        '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
-        '11:00', '11:30', '13:30', '14:00', '14:30', '15:00',
-        '15:30', '16:00', '16:30'
-      ];
-      
-      // Simular distribuição de horários baseada na senha
-      const indiceHorario = (senha - 1) % horarios.length;
-      const horario = horarios[indiceHorario];
+      if (!horarioSelecionado) {
+        alert('Horário não selecionado. Por favor, inicie o agendamento novamente.');
+        navigate('/');
+        return;
+      }
 
+      const senha = gerarProximaSenha();
+      
       const agendamento: Agendamento = {
         ...dados,
         id: `agendamento_${Date.now()}`,
         senha,
-        horario,
+        horario: horarioSelecionado,
         dataAgendamento: dataSelecionada
       };
 
@@ -101,14 +99,26 @@ export const Confirmacao: React.FC = () => {
           </div>
 
           <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 mb-8">
-            <div className="text-center text-white">
-              <h2 className="text-xl font-bold mb-2">Data Selecionada</h2>
-              <p className="text-2xl font-bold">{new Date(dataSelecionada).toLocaleDateString('pt-BR', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}</p>
+            <div className="flex flex-col md:flex-row justify-center items-center gap-6 text-white">
+              <div className="text-center">
+                <h2 className="text-xl font-bold mb-2">Data Selecionada</h2>
+                <p className="text-2xl font-bold">{new Date(dataSelecionada).toLocaleDateString('pt-BR', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}</p>
+              </div>
+              
+              {horarioSelecionado && (
+                <>
+                  <div className="hidden md:block w-px h-16 bg-white/30"></div>
+                  <div className="text-center">
+                    <h2 className="text-xl font-bold mb-2">Horário</h2>
+                    <p className="text-2xl font-bold">{horarioSelecionado}</p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

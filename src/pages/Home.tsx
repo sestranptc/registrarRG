@@ -13,16 +13,18 @@ import { CONFIG } from "../config/config"
 export const Home: React.FC = () => {
   const navigate = useNavigate()
   const [dataSelecionada, setDataSelecionada] = useState<string | null>(null)
+  const [horarioSelecionado, setHorarioSelecionado] = useState<string | null>(null)
   const ctaRef = useRef<HTMLDivElement>(null)
   const calendarRef = useRef<HTMLDivElement>(null)
 
   const handleSelecionarData = (data: string) => {
     setDataSelecionada(data)
+    setHorarioSelecionado(null)
   }
 
   const handleAgendar = () => {
-    if (dataSelecionada) {
-      navigate(`/confirmacao?data=${dataSelecionada}`)
+    if (dataSelecionada && horarioSelecionado) {
+      navigate(`/confirmacao?data=${dataSelecionada}&horario=${horarioSelecionado}`)
     }
   }
 
@@ -316,41 +318,67 @@ export const Home: React.FC = () => {
               )}
 
               {dataSelecionada && (
-                <div className="mb-6 p-4 bg-green-50 rounded-xl border border-green-200">
-                  <div className="flex items-center gap-3">
-                    <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    <div>
-                      <p className="text-xs text-green-700 font-medium uppercase tracking-wide">Data Selecionada</p>
-                      <p className="text-lg font-bold text-green-900">
-                        {new Date(dataSelecionada).toLocaleDateString("pt-BR", {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </p>
+                <>
+                  <div className="mb-6 p-4 bg-green-50 rounded-xl border border-green-200">
+                    <div className="flex items-center gap-3">
+                      <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                      <div>
+                        <p className="text-xs text-green-700 font-medium uppercase tracking-wide">Data Selecionada</p>
+                        <p className="text-lg font-bold text-green-900">
+                          {new Date(dataSelecionada).toLocaleDateString("pt-BR", {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+
+                  <div className="mb-6">
+                    <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Selecione um Horário
+                    </h4>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                      {CONFIG.HORARIOS_ATENDIMENTO.map((horario) => (
+                        <button
+                          key={horario}
+                          onClick={() => setHorarioSelecionado(horario)}
+                          className={`py-2 px-1 rounded-lg text-sm font-medium transition-all duration-200 border ${
+                            horarioSelecionado === horario
+                              ? "bg-green-600 text-white border-green-600 shadow-md scale-105 ring-2 ring-green-300 ring-offset-1"
+                              : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300"
+                          }`}
+                        >
+                          {horario}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
               )}
 
               <button
                 onClick={handleAgendar}
-                disabled={!dataSelecionada}
+                disabled={!dataSelecionada || !horarioSelecionado}
                 className={`w-full py-4 px-6 rounded-xl font-semibold text-lg focus:outline-none focus:ring-4 transition-all duration-300 flex items-center justify-center gap-3 ${
-                  dataSelecionada
+                  dataSelecionada && horarioSelecionado
                     ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 focus:ring-green-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
                     : "bg-gray-100 text-gray-400 cursor-not-allowed"
                 }`}
               >
-                {dataSelecionada ? (
+                {dataSelecionada && horarioSelecionado ? (
                   <>
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path
@@ -372,7 +400,7 @@ export const Home: React.FC = () => {
                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                       />
                     </svg>
-                    Selecione uma data
+                    {!dataSelecionada ? "Selecione uma data" : "Selecione um horário"}
                   </>
                 )}
               </button>
