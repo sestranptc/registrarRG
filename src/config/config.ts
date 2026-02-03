@@ -11,7 +11,7 @@ export const CONFIG = {
   ],
   INFORMACOES_PREFEITURA: {
     nome: 'Prefeitura Municipal de Patrocínio-MG',
-    endereco: 'Av. João Alves do Nascimento, 1452 - Cidade Jardim, Patrocínio - MG, 38747-056',
+    endereco: 'Avenida Altino Guimarães, 455 - Bairro Santo Antônio, Patrocínio - MG, 38.740-210',
     telefone: '(34) 3839-1800',
     horarioFuncionamento: 'Segunda a Sábado, 08:00 às 15:30'
   },
