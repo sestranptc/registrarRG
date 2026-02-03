@@ -5,9 +5,10 @@ import { SistemaConfig } from '../../hooks/useConfig';
 interface AdminCalendarProps {
   config: SistemaConfig;
   onToggleDate: (data: string, categoriaId: string) => void;
+  onCreateDefaultCategory?: () => void;
 }
 
-export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDate }) => {
+export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDate, onCreateDefaultCategory }) => {
   const [mesAtual, setMesAtual] = useState(new Date());
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>(
     config.categorias?.[0]?.id || ''
@@ -73,6 +74,11 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDa
         onToggleDate(data.toISOString().split('T')[0], config.categorias[0].id);
     } else if (categoriaSelecionada) {
         onToggleDate(data.toISOString().split('T')[0], categoriaSelecionada);
+    } else if (onCreateDefaultCategory) {
+        // Se não tem categoria mas tem função de criar
+        if (confirm("É necessário criar uma categoria primeiro. Deseja criar 'Público Geral' automaticamente?")) {
+            onCreateDefaultCategory();
+        }
     } else {
         alert("Crie uma Categoria de Público antes de selecionar datas.");
     }
@@ -113,9 +119,18 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDa
                 ))}
             </select>
         ) : (
-            <div className="text-xs text-red-500 bg-red-50 px-2 py-1 rounded">
-                Necessário criar categoria primeiro
-            </div>
+            onCreateDefaultCategory ? (
+                <button 
+                    onClick={onCreateDefaultCategory}
+                    className="text-xs text-white bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors font-medium shadow-sm"
+                >
+                    Criar Categoria Padrão
+                </button>
+            ) : (
+                <div className="text-xs text-red-500 bg-red-50 px-2 py-1 rounded">
+                    Necessário criar categoria primeiro
+                </div>
+            )
         )}
       </div>
 
@@ -170,16 +185,16 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDa
                         ${!estaNoMes ? 'opacity-20 bg-slate-50 border-transparent cursor-default' : ''}
                         ${passado && estaNoMes ? 'opacity-40 bg-slate-50 cursor-not-allowed border-slate-100' : ''}
                         ${estaNoMes && !passado ? 'hover:shadow-md cursor-pointer' : ''}
-                        ${selecionado && estaNoMes ? 'bg-teal-50 border-teal-200 ring-1 ring-teal-500' : 'bg-white border-slate-100'}
-                        ${!selecionado && estaNoMes && !passado ? 'hover:border-teal-200' : ''}
+                        ${selecionado && estaNoMes ? 'bg-emerald-100 border-emerald-400 ring-2 ring-emerald-500 shadow-sm' : 'bg-white border-slate-100'}
+                        ${!selecionado && estaNoMes && !passado ? 'hover:border-emerald-200 hover:bg-emerald-50' : ''}
                     `}
                     title={selecionado ? `Disponível para: ${categoriaNome}` : 'Clique para liberar'}
                 >
-                    <span className={`text-sm font-bold ${selecionado ? 'text-teal-700' : 'text-slate-600'}`}>
+                    <span className={`text-sm font-bold ${selecionado ? 'text-emerald-800' : 'text-slate-600'}`}>
                         {dia.getDate()}
                     </span>
                     {selecionado && (
-                        <span className="text-[10px] text-teal-600 truncate w-full px-1 text-center font-medium">
+                        <span className="text-[10px] text-emerald-700 truncate w-full px-1 text-center font-bold">
                             {categoriaNome || 'Ativo'}
                         </span>
                     )}
@@ -190,12 +205,12 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDa
 
       <div className="mt-4 flex items-center gap-4 text-xs text-slate-500 justify-center">
         <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-white border border-slate-200"></div>
+            <div className="w-4 h-4 rounded bg-white border border-slate-200 shadow-sm"></div>
             <span>Indisponível</span>
         </div>
         <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-teal-50 border border-teal-200 ring-1 ring-teal-500"></div>
-            <span>Disponível (Selecionado)</span>
+            <div className="w-4 h-4 rounded bg-emerald-100 border border-emerald-400 ring-2 ring-emerald-500 shadow-sm"></div>
+            <span className="font-bold text-emerald-800">Disponível (Selecionado)</span>
         </div>
       </div>
     </div>

@@ -630,16 +630,24 @@ export const Dashboard: React.FC = () => {
                   </div>
 
                   {/* Regras por Data - Substituído pelo Calendário Visual */}
-                  <AdminCalendar
-                    config={config}
-                    onToggleDate={(data, categoriaId) => {
-                      if (config.regrasDatas && config.regrasDatas[data]) {
-                        removerRegraData(data);
-                      } else {
-                        salvarRegraData(data, { categoriaId });
-                      }
-                    }}
-                  />
+        <AdminCalendar
+          config={config}
+          onToggleDate={(data, categoriaId) => {
+            if (config.regrasDatas && config.regrasDatas[data]) {
+              removerRegraData(data);
+            } else {
+              salvarRegraData(data, { categoriaId });
+            }
+          }}
+          onCreateDefaultCategory={() => {
+            salvarCategoria({
+              id: crypto.randomUUID(),
+              nome: 'Público Geral',
+              idadeMin: 0,
+              idadeMax: 100
+            });
+          }}
+        />
                 </div>
               </div>
             </div>
