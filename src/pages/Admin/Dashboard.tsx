@@ -48,7 +48,8 @@ export const Dashboard: React.FC = () => {
     salvarCategoria,
     removerCategoria,
     salvarRegraData,
-    removerRegraData
+    removerRegraData,
+    atualizarCapacidadeHorario
   } = useConfig();
   const [novoHorario, setNovoHorario] = useState('');
   const [novoFeriado, setNovoFeriado] = useState('');
