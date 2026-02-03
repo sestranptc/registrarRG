@@ -71,3 +71,6 @@ SMTP_PASS=sua-senha-de-app
 
 ## Licença
 Este projeto é de uso exclusivo da Prefeitura Municipal de Patrocínio-MG.
+
+---
+*Última atualização: Implementação do Calendário Visual Admin (03/02/2026)*
