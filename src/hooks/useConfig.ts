@@ -140,6 +140,11 @@ export const useConfig = () => {
     salvarConfiguracoes({ ...config, regrasDatas: novasRegras });
   };
 
+  const salvarVariasRegrasDatas = (novasRegrasMap: Record<string, RegraData>) => {
+    const novasRegras = { ...config.regrasDatas, ...novasRegrasMap };
+    salvarConfiguracoes({ ...config, regrasDatas: novasRegras });
+  };
+
   const removerRegraData = (data: string) => {
     const novasRegras = { ...config.regrasDatas };
     delete novasRegras[data];
@@ -168,6 +173,7 @@ export const useConfig = () => {
     salvarCategoria,
     removerCategoria,
     salvarRegraData,
+    salvarVariasRegrasDatas,
     removerRegraData,
     limparTodasRegras,
     atualizarCapacidadeHorario

@@ -8,9 +8,10 @@ interface AdminCalendarProps {
   onToggleDate: (data: string, categoriaId: string) => void;
   onCreateDefaultCategory?: () => void;
   onClearAll?: () => void;
+  onSetDefaultDates?: (categoriaId: string) => void;
 }
 
-export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDate, onCreateDefaultCategory, onClearAll }) => {
+export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDate, onCreateDefaultCategory, onClearAll, onSetDefaultDates }) => {
   const [mesAtual, setMesAtual] = useState(new Date());
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>(
     config.categorias?.[0]?.id || ''
@@ -92,6 +93,30 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDa
   const regrasAtivas = config.regrasDatas || {};
   const temRegras = Object.keys(regrasAtivas).length > 0;
 
+  const handleQuickSetup = () => {
+      if (!onSetDefaultDates) return;
+      
+      let catId = categoriaSelecionada;
+      if (!catId) {
+          if (config.categorias?.length > 0) {
+              catId = config.categorias[0].id;
+          } else if (onCreateDefaultCategory) {
+              if (confirm("Para configurar as datas, é necessário criar uma categoria primeiro. Criar 'Público Geral' agora?")) {
+                 onCreateDefaultCategory();
+                 // A criação é assíncrona, então o usuário terá que clicar de novo.
+                 // Mas como o estado atualiza, a categoria aparecerá.
+                 return;
+              } else {
+                  return;
+              }
+          } else {
+              alert("Erro: Nenhuma categoria disponível.");
+              return;
+          }
+      }
+      onSetDefaultDates(catId);
+  };
+
   // Atualiza categoria selecionada se a atual for removida
   React.useEffect(() => {
     if (config.categorias?.length > 0 && !config.categorias.find(c => c.id === categoriaSelecionada)) {
@@ -113,6 +138,16 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDa
         </div>
 
         <div className="flex items-center gap-2">
+            {onSetDefaultDates && (
+                <button
+                    onClick={handleQuickSetup}
+                    className="text-xs text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-2 rounded-lg transition-colors font-medium shadow-sm"
+                    title="Configura automaticamente os dias 07/02 e 14/02"
+                >
+                    Liberar 07 e 14
+                </button>
+            )}
+
             {temRegras && onClearAll && (
                 <button
                     onClick={onClearAll}

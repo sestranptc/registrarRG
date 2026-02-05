@@ -63,6 +63,7 @@ export const Dashboard: React.FC = () => {
     salvarCategoria,
     removerCategoria,
     salvarRegraData,
+    salvarVariasRegrasDatas,
     removerRegraData,
     limparTodasRegras,
     atualizarCapacidadeHorario
@@ -719,6 +720,14 @@ export const Dashboard: React.FC = () => {
             }
           }}
           onClearAll={limparTodasRegras}
+          onSetDefaultDates={(categoriaId) => {
+             const novasRegras = {
+                 '2026-02-07': { categoriaId },
+                 '2026-02-14': { categoriaId }
+             };
+             salvarVariasRegrasDatas(novasRegras);
+             alert('Datas 07/02 e 14/02 foram liberadas com sucesso!');
+          }}
           onCreateDefaultCategory={() => {
             salvarCategoria({
               id: crypto.randomUUID(),
