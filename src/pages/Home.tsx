@@ -336,7 +336,7 @@ export const Home: React.FC = () => {
                       <div>
                         <p className="text-xs text-green-700 font-medium uppercase tracking-wide">Data Selecionada</p>
                         <p className="text-lg font-bold text-green-900">
-                          {new Date(dataSelecionada).toLocaleDateString("pt-BR", {
+                          {new Date(dataSelecionada + 'T12:00:00').toLocaleDateString("pt-BR", {
                             weekday: "long",
                             year: "numeric",
                             month: "long",

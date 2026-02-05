@@ -1,7 +1,7 @@
 import { CONFIG } from '../config/config';
 
 export const formatarData = (dataString: string): string => {
-  const data = new Date(dataString);
+  const data = new Date(dataString + 'T12:00:00');
   return data.toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: '2-digit',
@@ -10,7 +10,7 @@ export const formatarData = (dataString: string): string => {
 };
 
 export const formatarDataExtenso = (dataString: string): string => {
-  const data = new Date(dataString);
+  const data = new Date(dataString + 'T12:00:00');
   return data.toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: 'long',

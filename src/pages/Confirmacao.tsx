@@ -92,7 +92,7 @@ export const Confirmacao: React.FC = () => {
       navigate('/sucesso', { 
         state: { 
           agendamento,
-          dataFormatada: new Date(dataSelecionada).toLocaleDateString('pt-BR')
+          dataFormatada: new Date(dataSelecionada + 'T12:00:00').toLocaleDateString('pt-BR')
         } 
       });
     } catch (error) {
@@ -116,7 +116,7 @@ export const Confirmacao: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-center items-center gap-6 text-white">
               <div className="text-center">
                 <h2 className="text-xl font-bold mb-2">Data Selecionada</h2>
-                <p className="text-2xl font-bold">{new Date(dataSelecionada).toLocaleDateString('pt-BR', {
+                <p className="text-2xl font-bold">{new Date(dataSelecionada + 'T12:00:00').toLocaleDateString('pt-BR', {
                   weekday: 'long',
                   year: 'numeric',
                   month: 'long',
