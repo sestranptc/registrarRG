@@ -171,7 +171,7 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDa
       
       <div className="grid grid-cols-7 gap-1">
         {dias.map((dia, idx) => {
-            const dataString = dia.toISOString().split('T')[0];
+            const dataString = toLocalISOString(dia);
             const estaNoMes = dia.getMonth() === mesAtual.getMonth();
             const regra = regrasAtivas[dataString];
             const selecionado = !!regra;
