@@ -47,8 +47,8 @@ export const useCalendario = () => {
 
       setDiasDisponiveis(datasValidas);
     } else {
-      // Nenhuma regra configurada = Modo Automático (dias calculados por obterDiasDisponiveis)
-      setDiasDisponiveis(dias);
+      // Nenhuma regra configurada = Nenhuma data disponível (Sistema 100% Manual)
+      setDiasDisponiveis([]);
     }
   };
 

@@ -138,11 +138,10 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDa
       </div>
 
       {!temRegras && (
-        <div className="mb-4 p-3 bg-blue-50 text-blue-700 text-sm rounded-xl flex items-start gap-2">
+        <div className="mb-4 p-3 bg-yellow-50 text-yellow-800 text-sm rounded-xl flex items-start gap-2 border border-yellow-200">
             <Info className="w-5 h-5 flex-shrink-0" />
             <p>
-                Atualmente o sistema está operando no modo <strong>Automático</strong> (Seg-Sáb). 
-                Ao selecionar uma data abaixo, o sistema mudará para modo <strong>Manual</strong> e apenas as datas selecionadas ficarão disponíveis.
+                <strong>Nenhuma data selecionada.</strong> O calendário público aparecerá como "Esgotado" até que você clique nas datas abaixo para liberá-las.
             </p>
         </div>
       )}
