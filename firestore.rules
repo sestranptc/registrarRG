@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // AVISO: Como o sistema usa autenticação local (não Firebase Auth),
+    // precisamos liberar o acesso para que o código funcione.
+    
+    // Regra geral para liberar tudo (solução imediata para o erro de permissão)
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

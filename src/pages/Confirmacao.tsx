@@ -88,7 +88,7 @@ export const Confirmacao: React.FC = () => {
         console.error('Erro de conexão com o backend:', dbError);
       }
 
-      salvarAgendamento(agendamento);
+      await salvarAgendamento(agendamento);
       
       navigate('/sucesso', { 
         state: { 
