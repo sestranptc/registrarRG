@@ -146,6 +146,12 @@ export const useConfig = () => {
     salvarConfiguracoes({ ...config, regrasDatas: novasRegras });
   };
 
+  const limparTodasRegras = () => {
+    if (confirm('Tem certeza que deseja remover TODAS as datas de atendimento? O agendamento ficará indisponível até que novas datas sejam selecionadas.')) {
+      salvarConfiguracoes({ ...config, regrasDatas: {} });
+    }
+  };
+
   const atualizarCapacidadeHorario = (horario: string, capacidade: number) => {
     const novasCapacidades = { ...(config.capacidadePorHorario || {}) };
     novasCapacidades[horario] = Math.max(0, Math.floor(capacidade));
@@ -163,6 +169,7 @@ export const useConfig = () => {
     removerCategoria,
     salvarRegraData,
     removerRegraData,
+    limparTodasRegras,
     atualizarCapacidadeHorario
   };
 };

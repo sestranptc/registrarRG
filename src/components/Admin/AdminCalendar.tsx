@@ -7,9 +7,10 @@ interface AdminCalendarProps {
   config: SistemaConfig;
   onToggleDate: (data: string, categoriaId: string) => void;
   onCreateDefaultCategory?: () => void;
+  onClearAll?: () => void;
 }
 
-export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDate, onCreateDefaultCategory }) => {
+export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDate, onCreateDefaultCategory, onClearAll }) => {
   const [mesAtual, setMesAtual] = useState(new Date());
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>(
     config.categorias?.[0]?.id || ''
@@ -111,30 +112,41 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDa
             </div>
         </div>
 
-        {config.categorias?.length > 0 ? (
-            <select
-                value={categoriaSelecionada}
-                onChange={(e) => setCategoriaSelecionada(e.target.value)}
-                className="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block p-2.5 outline-none"
-            >
-                {config.categorias.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.nome}</option>
-                ))}
-            </select>
-        ) : (
-            onCreateDefaultCategory ? (
-                <button 
-                    onClick={onCreateDefaultCategory}
-                    className="text-xs text-white bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors font-medium shadow-sm"
+        <div className="flex items-center gap-2">
+            {temRegras && onClearAll && (
+                <button
+                    onClick={onClearAll}
+                    className="text-xs text-red-600 bg-red-50 hover:bg-red-100 px-3 py-2 rounded-lg transition-colors font-medium border border-red-200"
                 >
-                    Criar Categoria Padrão
+                    Limpar Tudo
                 </button>
+            )}
+
+            {config.categorias?.length > 0 ? (
+                <select
+                    value={categoriaSelecionada}
+                    onChange={(e) => setCategoriaSelecionada(e.target.value)}
+                    className="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block p-2.5 outline-none"
+                >
+                    {config.categorias.map(cat => (
+                        <option key={cat.id} value={cat.id}>{cat.nome}</option>
+                    ))}
+                </select>
             ) : (
-                <div className="text-xs text-red-500 bg-red-50 px-2 py-1 rounded">
-                    Necessário criar categoria primeiro
-                </div>
-            )
-        )}
+                onCreateDefaultCategory ? (
+                    <button 
+                        onClick={onCreateDefaultCategory}
+                        className="text-xs text-white bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors font-medium shadow-sm"
+                    >
+                        Criar Categoria Padrão
+                    </button>
+                ) : (
+                    <div className="text-xs text-red-500 bg-red-50 px-2 py-1 rounded">
+                        Necessário criar categoria primeiro
+                    </div>
+                )
+            )}
+        </div>
       </div>
 
       {!temRegras && (

@@ -64,6 +64,7 @@ export const Dashboard: React.FC = () => {
     removerCategoria,
     salvarRegraData,
     removerRegraData,
+    limparTodasRegras,
     atualizarCapacidadeHorario
   } = useConfig();
   const [novoHorario, setNovoHorario] = useState('');
@@ -717,6 +718,7 @@ export const Dashboard: React.FC = () => {
               salvarRegraData(data, { categoriaId });
             }
           }}
+          onClearAll={limparTodasRegras}
           onCreateDefaultCategory={() => {
             salvarCategoria({
               id: crypto.randomUUID(),
