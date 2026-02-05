@@ -93,7 +93,10 @@ export const useCalendario = () => {
   };
 
   const ehDiaDisponivel = (data: Date): boolean => {
-    const dataString = data.toISOString().split('T')[0];
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    const dataString = `${ano}-${mes}-${dia}`;
     return diasDisponiveis.includes(dataString);
   };
 

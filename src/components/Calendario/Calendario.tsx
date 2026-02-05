@@ -37,7 +37,12 @@ export const Calendario: React.FC<CalendarioProps> = ({ aoSelecionarData }) => {
   }, []);
 
   const handleSelecionarData = (data: Date) => {
-    const dataString = data.toISOString().split('T')[0];
+    // Usar a função local para garantir YYYY-MM-DD correto independente do fuso
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    const dataString = `${ano}-${mes}-${dia}`;
+    
     setDataSelecionada(dataString);
     aoSelecionarData(dataString);
   };
@@ -91,7 +96,11 @@ export const Calendario: React.FC<CalendarioProps> = ({ aoSelecionarData }) => {
           <div className="col-span-7 text-center text-gray-500">Sem dias para exibir</div>
         )}
         {diasDoMes.map((data, index) => {
-          const dataString = data.toISOString().split('T')[0];
+          const ano = data.getFullYear();
+          const mes = String(data.getMonth() + 1).padStart(2, '0');
+          const dia = String(data.getDate()).padStart(2, '0');
+          const dataString = `${ano}-${mes}-${dia}`;
+          
           const ehDiaAtual = data.toDateString() === hoje.toDateString();
           const vagasRestantes = obterVagasRestantes(dataString);
           

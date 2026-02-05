@@ -9,6 +9,13 @@ export const formatarData = (dataString: string): string => {
   });
 };
 
+export const toLocalISOString = (data: Date): string => {
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const dia = String(data.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+};
+
 export const formatarDataExtenso = (dataString: string): string => {
   const data = new Date(dataString + 'T12:00:00');
   return data.toLocaleDateString('pt-BR', {
@@ -43,7 +50,11 @@ export const obterDiasDisponiveis = (
   let dataAtual = new Date(dataInicial);
   
   while (dataAtual <= dataFinal) {
-    const dataString = dataAtual.toISOString().split('T')[0];
+    // Usar toLocalISOString para evitar problemas de fuso horário
+    const ano = dataAtual.getFullYear();
+    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+    const dia = String(dataAtual.getDate()).padStart(2, '0');
+    const dataString = `${ano}-${mes}-${dia}`;
     
     // Regra: Dias úteis (Segunda a Sábado) - Domingo (0) bloqueado
     // E a data não pode estar na lista de feriados

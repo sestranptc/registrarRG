@@ -71,9 +71,17 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDa
     if (!categoriaSelecionada && config.categorias?.length > 0) {
         // Tenta selecionar a primeira se não tiver
         setCategoriaSelecionada(config.categorias[0].id);
-        onToggleDate(data.toISOString().split('T')[0], config.categorias[0].id);
+        const ano = data.getFullYear();
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const dia = String(data.getDate()).padStart(2, '0');
+        const dataString = `${ano}-${mes}-${dia}`;
+        onToggleDate(dataString, config.categorias[0].id);
     } else if (categoriaSelecionada) {
-        onToggleDate(data.toISOString().split('T')[0], categoriaSelecionada);
+        const ano = data.getFullYear();
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const dia = String(data.getDate()).padStart(2, '0');
+        const dataString = `${ano}-${mes}-${dia}`;
+        onToggleDate(dataString, categoriaSelecionada);
     } else if (onCreateDefaultCategory) {
         // Se não tem categoria mas tem função de criar
         if (confirm("É necessário criar uma categoria primeiro. Deseja criar 'Público Geral' automaticamente?")) {
