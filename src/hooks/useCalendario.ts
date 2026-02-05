@@ -25,7 +25,13 @@ export const useCalendario = () => {
     // Alteração: O sistema agora opera SEMPRE em modo manual (whitelist) ou restritivo.
     // Se houver regras, apenas essas datas são mostradas (respeitando a janela de antecedência).
     // Se não houver regras, NENHUMA data é mostrada.
-    if (regras.length > 0) {
+    
+    // Hardcode: Forçar datas 07/02/2026 e 14/02/2026 como disponíveis
+    const datasForcadas = ['2026-02-07', '2026-02-14'];
+    const regrasAtivas = new Set([...regras, ...datasForcadas]);
+    const regrasArray = Array.from(regrasAtivas);
+
+    if (regrasArray.length > 0) {
       // Filtra as regras para garantir que estão dentro da janela permitida (futuro)
       // Usamos a lista 'dias' apenas como referência de janela válida se quisermos ser estritos com feriados/fds,
       // mas para dar controle total ao admin, vamos permitir qualquer data configurada que esteja na janela de tempo.
@@ -33,7 +39,7 @@ export const useCalendario = () => {
       const hoje = new Date();
       hoje.setHours(0, 0, 0, 0);
       
-      const datasValidas = regras.filter(dataString => {
+      const datasValidas = regrasArray.filter(dataString => {
          // Cria data compensando fuso se necessário, ou assumindo string YYYY-MM-DD
          const [ano, mes, dia] = dataString.split('-').map(Number);
          const data = new Date(ano, mes - 1, dia);

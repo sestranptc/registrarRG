@@ -4,6 +4,10 @@ import emailjs from '@emailjs/browser';
 
 export const enviarEmailConfirmacao = async (agendamento: Agendamento, dataFormatada: string, validationLink?: string): Promise<boolean> => {
   try {
+    // DESATIVADO TEMPORARIAMENTE
+    console.log('Envio de email desativado temporariamente.');
+    return true;
+
     const isProduction = import.meta.env.PROD;
 
     if (isProduction) {
