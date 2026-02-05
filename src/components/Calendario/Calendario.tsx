@@ -4,6 +4,7 @@ import { useCalendario } from '../../hooks/useCalendario';
 import { useAgendamentos } from '../../hooks/useAgendamentos';
 import { DiaCalendario } from './DiaCalendario';
 import { ContadorVagas } from './ContadorVagas';
+import { toLocalISOString } from '../../utils/dateUtils';
 
 interface CalendarioProps {
   aoSelecionarData: (data: string) => void;
@@ -38,10 +39,7 @@ export const Calendario: React.FC<CalendarioProps> = ({ aoSelecionarData }) => {
 
   const handleSelecionarData = (data: Date) => {
     // Usar a função local para garantir YYYY-MM-DD correto independente do fuso
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    const dataString = `${ano}-${mes}-${dia}`;
+    const dataString = toLocalISOString(data);
     
     setDataSelecionada(dataString);
     aoSelecionarData(dataString);

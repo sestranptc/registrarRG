@@ -11,6 +11,7 @@ import { Footer } from "../components/Layout/Footer"
 import { CONFIG } from "../config/config"
 import { useConfig } from "../hooks/useConfig"
 import { useAgendamentos } from "../hooks/useAgendamentos"
+import { parseLocalDate } from "../utils/dateUtils"
 
 export const Home: React.FC = () => {
   const navigate = useNavigate()
@@ -118,8 +119,10 @@ export const Home: React.FC = () => {
                       />
                     </svg>
                   </div>
-                  <div className="text-4xl font-bold">30</div>
-                  <div className="text-sm opacity-90 text-center">Dias de antecedência</div>
+                  <div className="text-4xl font-bold">
+                    {dataSelecionada ? parseLocalDate(dataSelecionada).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : "--/--"}
+                  </div>
+                  <div className="text-sm opacity-90 text-center">Data Selecionada</div>
                 </div>
               </div>
             </div>

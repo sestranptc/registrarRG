@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Info } from 'lucide-react';
 import { SistemaConfig } from '../../hooks/useConfig';
+import { toLocalISOString } from '../../utils/dateUtils';
 
 interface AdminCalendarProps {
   config: SistemaConfig;
@@ -71,16 +72,10 @@ export const AdminCalendar: React.FC<AdminCalendarProps> = ({ config, onToggleDa
     if (!categoriaSelecionada && config.categorias?.length > 0) {
         // Tenta selecionar a primeira se não tiver
         setCategoriaSelecionada(config.categorias[0].id);
-        const ano = data.getFullYear();
-        const mes = String(data.getMonth() + 1).padStart(2, '0');
-        const dia = String(data.getDate()).padStart(2, '0');
-        const dataString = `${ano}-${mes}-${dia}`;
+        const dataString = toLocalISOString(data);
         onToggleDate(dataString, config.categorias[0].id);
     } else if (categoriaSelecionada) {
-        const ano = data.getFullYear();
-        const mes = String(data.getMonth() + 1).padStart(2, '0');
-        const dia = String(data.getDate()).padStart(2, '0');
-        const dataString = `${ano}-${mes}-${dia}`;
+        const dataString = toLocalISOString(data);
         onToggleDate(dataString, categoriaSelecionada);
     } else if (onCreateDefaultCategory) {
         // Se não tem categoria mas tem função de criar

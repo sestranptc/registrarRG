@@ -1,7 +1,7 @@
 import { CONFIG } from '../config/config';
 
 export const formatarData = (dataString: string): string => {
-  const data = new Date(dataString + 'T12:00:00');
+  const data = parseLocalDate(dataString);
   return data.toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: '2-digit',
@@ -16,8 +16,14 @@ export const toLocalISOString = (data: Date): string => {
   return `${ano}-${mes}-${dia}`;
 };
 
+export const parseLocalDate = (dataString: string): Date => {
+  if (!dataString) return new Date();
+  const [ano, mes, dia] = dataString.split('-').map(Number);
+  return new Date(ano, mes - 1, dia, 12, 0, 0);
+};
+
 export const formatarDataExtenso = (dataString: string): string => {
-  const data = new Date(dataString + 'T12:00:00');
+  const data = parseLocalDate(dataString);
   return data.toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: 'long',
@@ -51,10 +57,7 @@ export const obterDiasDisponiveis = (
   
   while (dataAtual <= dataFinal) {
     // Usar toLocalISOString para evitar problemas de fuso horário
-    const ano = dataAtual.getFullYear();
-    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
-    const dia = String(dataAtual.getDate()).padStart(2, '0');
-    const dataString = `${ano}-${mes}-${dia}`;
+    const dataString = toLocalISOString(dataAtual);
     
     // Regra: Dias úteis (Segunda a Sábado) - Domingo (0) bloqueado
     // E a data não pode estar na lista de feriados
