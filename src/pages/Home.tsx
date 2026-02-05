@@ -102,7 +102,7 @@ export const Home: React.FC = () => {
                       />
                     </svg>
                   </div>
-                  <div className="text-4xl font-bold">1-100</div>
+                  <div className="text-4xl font-bold">1-60</div>
                   <div className="text-sm opacity-90 text-center">Senhas disponíveis</div>
                 </div>
               </div>
