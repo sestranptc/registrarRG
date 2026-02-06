@@ -90,6 +90,8 @@ export const DiaCalendario: React.FC<DiaCalendarioProps> = ({
       onClick={aoClicarDia}
       disabled={ehDiaPassado || !ehDiaDisponivel || vagasRestantes <= 0}
       className={obterClasseDia()}
+      type="button"
+      title={ehDiaDisponivel ? `Vagas: ${vagasRestantes}` : 'Indisponível'}
     >
       <span>{data.getDate()}</span>
       {obterIndicadorVagas()}

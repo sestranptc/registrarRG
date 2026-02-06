@@ -33,14 +33,14 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
 
   useEffect(() => {
     // Escutar configurações em tempo real
-    const unsubscribeConfig = onSnapshot(doc(db, 'configuracoes', 'geral'), (docSnap) => {
+      const unsubscribeConfig = onSnapshot(doc(db, 'configuracoes', 'geral'), (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
-        if (typeof data.limiteVagasPorDia === 'number') {
-          setLimiteVagas(data.limiteVagasPorDia);
+        if (data.limiteVagasPorDia !== undefined) {
+          setLimiteVagas(Number(data.limiteVagasPorDia));
         }
-        if (typeof data.limiteTotalCampanha === 'number') {
-          setLimiteTotalCampanha(data.limiteTotalCampanha);
+        if (data.limiteTotalCampanha !== undefined) {
+          setLimiteTotalCampanha(Number(data.limiteTotalCampanha));
         }
       }
     });
