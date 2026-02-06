@@ -473,11 +473,18 @@ export const Home: React.FC = () => {
           </div>
           <div className="h-8 w-px bg-white/20"></div>
           <div className="flex flex-col">
-            <span className="text-gray-400">Vagas Restantes 14/02</span>
-            <span className="font-bold text-white">{obterVagasRestantes('2026-02-14')}</span>
+              <span className="text-gray-400">Vagas Restantes 14/02</span>
+              <span className="font-bold text-white">{obterVagasRestantes('2026-02-14')}</span>
+            </div>
+            <div className="h-8 w-px bg-white/20"></div>
+            <div className="flex flex-col">
+              <span className="text-gray-400">Regra 14/02?</span>
+              <span className="font-bold text-white">
+                {config.regrasDatas && config.regrasDatas['2026-02-14'] ? 'SIM' : 'NÃO'}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
     </div>
   )
 }
