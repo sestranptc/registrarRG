@@ -118,7 +118,7 @@ export const Dashboard: React.FC = () => {
     }
   };
 
-  const compareceram = agendamentosDoDia.filter(ag => ag.compareceu).length;
+  const compareceram = agendamentosFiltrados.filter(ag => ag.compareceu).length;
 
   const handleExportPDF = () => {
     const doc = new jsPDF();
@@ -267,10 +267,12 @@ export const Dashboard: React.FC = () => {
                       <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
                         <Users className="w-5 h-5" />
                       </div>
-                      <p className="text-slate-500 text-sm font-medium">Total Agendado</p>
+                      <p className="text-slate-500 text-sm font-medium">Total Listado</p>
                     </div>
-                    <p className="text-4xl font-bold text-slate-800">{agendamentosDoDia.length}</p>
-                    <p className="text-xs text-slate-400 mt-2">Para {new Date(dataFiltro).toLocaleDateString('pt-BR')}</p>
+                    <p className="text-4xl font-bold text-slate-800">{agendamentosFiltrados.length}</p>
+                    <p className="text-xs text-slate-400 mt-2">
+                      {termoBusca ? 'Filtrado por busca' : `Para ${new Date(dataFiltro).toLocaleDateString('pt-BR')}`}
+                    </p>
                   </div>
                 </div>
 
@@ -287,7 +289,7 @@ export const Dashboard: React.FC = () => {
                     <div className="w-full bg-slate-100 h-1.5 mt-3 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-emerald-500 rounded-full transition-all duration-500"
-                        style={{ width: `${agendamentosDoDia.length ? (compareceram / agendamentosDoDia.length) * 100 : 0}%` }}
+                        style={{ width: `${agendamentosFiltrados.length ? (compareceram / agendamentosFiltrados.length) * 100 : 0}%` }}
                       ></div>
                     </div>
                   </div>
@@ -302,7 +304,7 @@ export const Dashboard: React.FC = () => {
                       </div>
                       <p className="text-slate-500 text-sm font-medium">Pendentes</p>
                     </div>
-                    <p className="text-4xl font-bold text-slate-800">{agendamentosDoDia.length - compareceram}</p>
+                    <p className="text-4xl font-bold text-slate-800">{agendamentosFiltrados.length - compareceram}</p>
                     <p className="text-xs text-slate-400 mt-2">Aguardando chegada</p>
                   </div>
                 </div>
@@ -312,7 +314,12 @@ export const Dashboard: React.FC = () => {
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <h3 className="text-lg font-bold text-slate-800">Lista de Cidadãos</h3>
+                    <h3 className="text-lg font-bold text-slate-800">
+                      Lista de Cidadãos 
+                      <span className="ml-2 text-sm font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                        {agendamentosFiltrados.length}
+                      </span>
+                    </h3>
                     <button
                       onClick={handleExportPDF}
                       className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors text-sm font-medium border border-slate-200"
