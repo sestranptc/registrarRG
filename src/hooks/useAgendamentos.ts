@@ -14,7 +14,8 @@ import {
   setDoc,
   getDoc,
   where,
-  getDocs
+  getDocs,
+  writeBatch
 } from 'firebase/firestore';
 import { toLocalISOString } from '../utils/dateUtils';
 
@@ -190,6 +191,48 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
     return senhaAtual;
   };
 
+  const renumerarSenhasDoDia = async (data: string) => {
+    try {
+      // 1. Buscar todos os agendamentos do dia
+      const q = query(
+        collection(db, AGENDAMENTOS_COLLECTION),
+        where('dataAgendamento', '==', data)
+      );
+      
+      const snapshot = await getDocs(q);
+      const agendamentosDoDia = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      })) as Agendamento[];
+
+      // 2. Ordenar por Horário e Nome
+      agendamentosDoDia.sort((a, b) => {
+        // Primeiro por horário
+        const horarioCompare = a.horario.localeCompare(b.horario);
+        if (horarioCompare !== 0) return horarioCompare;
+        
+        // Desempate por nome
+        return a.nome.localeCompare(b.nome);
+      });
+
+      // 3. Renumerar e Atualizar em Batch
+      const batch = writeBatch(db);
+      let contador = 1;
+
+      agendamentosDoDia.forEach(ag => {
+        const ref = doc(db, AGENDAMENTOS_COLLECTION, ag.id);
+        batch.update(ref, { senha: contador });
+        contador++;
+      });
+
+      await batch.commit();
+      return true;
+    } catch (error) {
+      console.error("Erro ao renumerar senhas:", error);
+      throw error;
+    }
+  };
+
   return {
     agendamentos,
     loading,
@@ -203,6 +246,7 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
     verificarDisponibilidade,
     verificarAgendamentoExistente,
     obterVagasRestantes,
-    gerarProximaSenha
+    gerarProximaSenha,
+    renumerarSenhasDoDia
   };
 };

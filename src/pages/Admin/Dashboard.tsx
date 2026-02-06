@@ -28,7 +28,8 @@ import {
   Save,
   ArrowUpDown,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  RefreshCw
 } from 'lucide-react';
 import { Agendamento } from '../../types';
 import { toLocalISOString } from '../../utils/dateUtils';
@@ -42,7 +43,14 @@ export const Dashboard: React.FC = () => {
   
   // Agendamentos State
   // Carregar TODO o histórico para o admin (apenasFuturos = false)
-  const { obterAgendamentosPorData, toggleCompareceu, agendamentos, deletarAgendamento, atualizarAgendamento } = useAgendamentos(false);
+  const { 
+    obterAgendamentosPorData, 
+    toggleCompareceu, 
+    agendamentos, 
+    deletarAgendamento, 
+    atualizarAgendamento,
+    renumerarSenhasDoDia
+  } = useAgendamentos(false);
   const [dataFiltro, setDataFiltro] = useState(toLocalISOString(new Date()));
   const [mostrarTodos, setMostrarTodos] = useState(false);
   const [termoBusca, setTermoBusca] = useState('');
@@ -320,6 +328,29 @@ export const Dashboard: React.FC = () => {
                         {agendamentosFiltrados.length}
                       </span>
                     </h3>
+                    <button
+                      onClick={async () => {
+                        if (mostrarTodos) {
+                          alert("Por favor, desmarque a opção 'Mostrar Todos' e selecione uma data específica para renumerar.");
+                          return;
+                        }
+
+                        if (window.confirm(`Isso irá reorganizar TODAS as senhas do dia ${new Date(dataFiltro + 'T12:00:00').toLocaleDateString('pt-BR')} em ordem sequencial (1, 2, 3...) baseada no horário e nome.\n\nIsso corrige duplicidades de senha.\n\nDeseja continuar?`)) {
+                          try {
+                            await renumerarSenhasDoDia(dataFiltro);
+                            alert('Senhas renumeradas com sucesso!');
+                          } catch (e) {
+                            alert('Erro ao renumerar senhas. Tente novamente.');
+                            console.error(e);
+                          }
+                        }
+                      }}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors text-sm font-medium border border-indigo-200"
+                      title="Corrigir sequência de senhas duplicadas"
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                      <span className="hidden sm:inline">Renumerar Senhas</span>
+                    </button>
                     <button
                       onClick={handleExportPDF}
                       className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors text-sm font-medium border border-slate-200"
