@@ -28,6 +28,8 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
   const [senhaAtual, setSenhaAtual] = useState<number>(1);
   const [loading, setLoading] = useState(true);
   const [limiteVagas, setLimiteVagas] = useState<number>(CONFIG.LIMITE_VAGAS_POR_DIA);
+  const [limiteTotalCampanha, setLimiteTotalCampanha] = useState<number>(0);
+  const [totalGlobal, setTotalGlobal] = useState<number>(0);
 
   useEffect(() => {
     // Escutar configurações em tempo real
@@ -37,18 +39,27 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
         if (typeof data.limiteVagasPorDia === 'number') {
           setLimiteVagas(data.limiteVagasPorDia);
         }
+        if (typeof data.limiteTotalCampanha === 'number') {
+          setLimiteTotalCampanha(data.limiteTotalCampanha);
+        }
       }
     });
 
     // Escutar agendamentos em tempo real
     // Otimização: Por padrão, carregar apenas agendamentos de hoje em diante para economizar leituras
     let q;
+    let qTotal; // Query para total global se necessário
     
     if (apenasFuturos) {
       const hoje = toLocalISOString(new Date());
       q = query(collection(db, AGENDAMENTOS_COLLECTION), where('dataAgendamento', '>=', hoje));
+      
+      // Se tiver limite global, precisamos saber o total de agendamentos (passados + futuros)
+      // Como o limite é pequeno (120), podemos ouvir a coleção toda para ter o contador preciso
+      qTotal = query(collection(db, AGENDAMENTOS_COLLECTION));
     } else {
       q = query(collection(db, AGENDAMENTOS_COLLECTION));
+      qTotal = q; // Mesma query
     }
 
     const unsubscribeAgendamentos = onSnapshot(q, (snapshot) => {
@@ -72,6 +83,23 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
       setLoading(false);
     });
 
+    // Listener separado para total global (apenas se apenasFuturos=true, senão já temos no agendamentos)
+    let unsubscribeTotal = () => {};
+    if (apenasFuturos) {
+      unsubscribeTotal = onSnapshot(qTotal!, (snapshot) => {
+        setTotalGlobal(snapshot.size);
+      });
+    } else {
+       // Se não é apenasFuturos, o totalGlobal é o tamanho de agendamentos
+       // Mas como agendamentos é setado assincronamente, melhor manter listener ou derivar
+       // Vamos derivar no useEffect de agendamentos? Não, melhor manter separado para consistência
+       unsubscribeTotal = onSnapshot(qTotal!, (snapshot) => {
+        setTotalGlobal(snapshot.size);
+      });
+    }
+
+    // Escutar contador de senhas
+
     // Escutar contador de senhas
     const unsubscribeCounter = onSnapshot(doc(db, COUNTERS_COLLECTION, COUNTER_DOC_ID), (docSnap) => {
       if (docSnap.exists()) {
@@ -86,6 +114,7 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
     return () => {
       unsubscribeConfig();
       unsubscribeAgendamentos();
+      unsubscribeTotal();
       unsubscribeCounter();
     };
   }, [apenasFuturos]);
@@ -232,8 +261,19 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
   };
 
   const obterVagasRestantes = (data: string): number => {
+    // 1. Verificar limite diário
     const agendamentosDoDia = obterAgendamentosPorData(data);
-    return Math.max(0, limiteVagas - agendamentosDoDia.length);
+    const vagasPeloDia = Math.max(0, limiteVagas - agendamentosDoDia.length);
+
+    // 2. Verificar limite global
+    if (limiteTotalCampanha > 0) {
+      // Se o limite global for atingido, não há mais vagas para nenhum dia
+      // Nota: O totalGlobal inclui os agendamentos atuais.
+      const vagasPelaCampanha = Math.max(0, limiteTotalCampanha - totalGlobal);
+      return Math.min(vagasPeloDia, vagasPelaCampanha);
+    }
+
+    return vagasPeloDia;
   };
 
   const gerarProximaSenha = (): number => {
@@ -296,6 +336,9 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
     verificarAgendamentoExistente,
     obterVagasRestantes,
     gerarProximaSenha,
-    renumerarSenhasDoDia
+    renumerarSenhasDoDia,
+    limiteVagas,
+    limiteTotalCampanha,
+    totalGlobal
   };
 };

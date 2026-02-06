@@ -16,7 +16,14 @@ import { parseLocalDate } from "../utils/dateUtils"
 export const Home: React.FC = () => {
   const navigate = useNavigate()
   const { config } = useConfig()
-  const { contarAgendamentosPorHorario } = useAgendamentos()
+  const { 
+    contarAgendamentosPorHorario, 
+    agendamentos, 
+    obterVagasRestantes,
+    limiteVagas,
+    limiteTotalCampanha,
+    totalGlobal
+  } = useAgendamentos()
   const [dataSelecionada, setDataSelecionada] = useState<string | null>(null)
   const [horarioSelecionado, setHorarioSelecionado] = useState<string | null>(null)
   const ctaRef = useRef<HTMLDivElement>(null)
@@ -441,6 +448,36 @@ export const Home: React.FC = () => {
       </main>
 
       <Footer />
+      
+      {/* PAINEL DE DEBUG TEMPORÁRIO - REMOVER DEPOIS */}
+      <div className="fixed bottom-0 left-0 right-0 bg-black/90 text-white p-2 text-xs z-50 font-mono border-t border-white/20">
+        <div className="max-w-7xl mx-auto flex flex-wrap gap-4 justify-center items-center">
+          <div className="flex flex-col">
+            <span className="text-gray-400">Limite Diário (Config)</span>
+            <span className="font-bold text-green-400">{limiteVagas}</span>
+          </div>
+          <div className="h-8 w-px bg-white/20"></div>
+          <div className="flex flex-col">
+            <span className="text-gray-400">Limite Global (Config)</span>
+            <span className="font-bold text-blue-400">{limiteTotalCampanha}</span>
+          </div>
+          <div className="h-8 w-px bg-white/20"></div>
+          <div className="flex flex-col">
+            <span className="text-gray-400">Total Global (Real)</span>
+            <span className="font-bold text-yellow-400">{totalGlobal}</span>
+          </div>
+          <div className="h-8 w-px bg-white/20"></div>
+          <div className="flex flex-col">
+            <span className="text-gray-400">Agendamentos 14/02</span>
+            <span className="font-bold text-red-400">{agendamentos.filter(a => a.dataAgendamento === '2026-02-14').length}</span>
+          </div>
+          <div className="h-8 w-px bg-white/20"></div>
+          <div className="flex flex-col">
+            <span className="text-gray-400">Vagas Restantes 14/02</span>
+            <span className="font-bold text-white">{obterVagasRestantes('2026-02-14')}</span>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
