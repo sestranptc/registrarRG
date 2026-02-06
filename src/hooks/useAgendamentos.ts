@@ -95,7 +95,20 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
       // 0. Obter limite de vagas atualizado diretamente do banco para garantir integridade
       // (caso o state ainda não tenha atualizado ou para evitar condições de corrida com configurações antigas)
       const configDoc = await getDoc(doc(db, 'configuracoes', 'geral'));
-      const limiteAtual = configDoc.exists() ? (configDoc.data().limiteVagasPorDia || CONFIG.LIMITE_VAGAS_POR_DIA) : CONFIG.LIMITE_VAGAS_POR_DIA;
+      const configData = configDoc.exists() ? configDoc.data() : {};
+      const limiteAtual = configData.limiteVagasPorDia || CONFIG.LIMITE_VAGAS_POR_DIA;
+      const limiteTotalCampanha = configData.limiteTotalCampanha || 0; // 0 = sem limite
+
+      // VERIFICAÇÃO DE LIMITE GLOBAL DA CAMPANHA (SERVER-SIDE)
+      if (limiteTotalCampanha > 0) {
+        // Conta todos os agendamentos da coleção (pode ser otimizado com contador dedicado no futuro)
+        const snapshotTotal = await getDocs(query(collection(db, AGENDAMENTOS_COLLECTION)));
+        const totalCampanha = snapshotTotal.size;
+
+        if (totalCampanha >= limiteTotalCampanha) {
+          throw new Error(`A campanha atingiu o limite total de ${limiteTotalCampanha} agendamentos. Inscrições encerradas.`);
+        }
+      }
 
       // VERIFICAÇÃO DE SEGURANÇA (SERVER-SIDE):
       // Antes de iniciar a transação, verifica no banco se já atingiu o limite para esta data.

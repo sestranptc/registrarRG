@@ -68,6 +68,7 @@ export const Dashboard: React.FC = () => {
     adicionarFeriado, 
     removerFeriado,
     atualizarLimiteVagas,
+    atualizarLimiteTotalCampanha,
     salvarCategoria,
     removerCategoria,
     salvarRegraData,
@@ -685,6 +686,23 @@ export const Dashboard: React.FC = () => {
                         />
                         <span className="text-slate-500 text-sm">
                           vagas disponíveis para agendamento diário
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="max-w-md mt-6">
+                      <label className="block text-sm font-bold text-slate-700 mb-2">
+                        Limite Total da Campanha
+                      </label>
+                      <div className="flex items-center gap-4">
+                        <input
+                          type="number"
+                          value={config.limiteTotalCampanha || 0}
+                          onChange={(e) => atualizarLimiteTotalCampanha(Number(e.target.value))}
+                          className="w-32 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-bold text-slate-800 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all"
+                        />
+                        <span className="text-slate-500 text-sm">
+                          total máximo de agendamentos permitidos (0 = sem limite)
                         </span>
                       </div>
                     </div>

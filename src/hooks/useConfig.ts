@@ -19,6 +19,7 @@ export interface SistemaConfig {
   horariosAtendimento: string[];
   feriados: string[];
   limiteVagasPorDia: number;
+  limiteTotalCampanha?: number; // Novo campo opcional para limite global
   categorias: Categoria[];
   regrasDatas: Record<string, RegraData>;
   capacidadePorHorario?: Record<string, number>;
@@ -46,6 +47,7 @@ export const useConfig = () => {
           horariosAtendimento: data.horariosAtendimento || [...CONFIG.HORARIOS_ATENDIMENTO],
           feriados: data.feriados || [...CONFIG.FERIADOS],
           limiteVagasPorDia: data.limiteVagasPorDia || CONFIG.LIMITE_VAGAS_POR_DIA,
+          limiteTotalCampanha: data.limiteTotalCampanha || 0, // 0 significa sem limite
           categorias: data.categorias || [],
           regrasDatas: data.regrasDatas || {},
           capacidadePorHorario: data.capacidadePorHorario || {}
@@ -109,6 +111,10 @@ export const useConfig = () => {
     salvarConfiguracoes({ ...config, limiteVagasPorDia: limite });
   };
 
+  const atualizarLimiteTotalCampanha = (limite: number) => {
+    salvarConfiguracoes({ ...config, limiteTotalCampanha: limite });
+  };
+
   const salvarCategoria = (categoria: Categoria) => {
     const novasCategorias = [...config.categorias];
     const index = novasCategorias.findIndex(c => c.id === categoria.id);
@@ -170,6 +176,7 @@ export const useConfig = () => {
     adicionarFeriado,
     removerFeriado,
     atualizarLimiteVagas,
+    atualizarLimiteTotalCampanha,
     salvarCategoria,
     removerCategoria,
     salvarRegraData,
