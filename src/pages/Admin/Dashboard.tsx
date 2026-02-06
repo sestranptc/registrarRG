@@ -271,7 +271,7 @@ export const Dashboard: React.FC = () => {
                     </div>
                     <p className="text-4xl font-bold text-slate-800">{agendamentosFiltrados.length}</p>
                     <p className="text-xs text-slate-400 mt-2">
-                      {termoBusca ? 'Filtrado por busca' : `Para ${new Date(dataFiltro).toLocaleDateString('pt-BR')}`}
+                      {termoBusca ? 'Filtrado por busca' : `Para ${dataFiltro.split('-').reverse().join('/')}`}
                     </p>
                   </div>
                 </div>
