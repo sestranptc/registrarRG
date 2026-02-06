@@ -109,8 +109,8 @@ export const Home: React.FC = () => {
                       />
                     </svg>
                   </div>
-                  <div className="text-4xl font-bold">1-{config.limiteVagasPorDia}</div>
-                  <div className="text-sm opacity-90 text-center">Senhas disponíveis</div>
+                  <div className="text-4xl font-bold">{totalGlobal}/{limiteTotalCampanha > 0 ? limiteTotalCampanha : '∞'}</div>
+                  <div className="text-sm opacity-90 text-center">Inscritos / Limite</div>
                 </div>
               </div>
 
@@ -488,3 +488,4 @@ export const Home: React.FC = () => {
     </div>
   )
 }
+ 
