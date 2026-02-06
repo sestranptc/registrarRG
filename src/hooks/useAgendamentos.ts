@@ -13,7 +13,8 @@ import {
   runTransaction,
   setDoc,
   getDoc,
-  where
+  where,
+  getDocs
 } from 'firebase/firestore';
 import { toLocalISOString } from '../utils/dateUtils';
 
@@ -78,6 +79,21 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
 
   const salvarAgendamento = async (agendamento: Agendamento) => {
     try {
+      // VERIFICAÇÃO DE SEGURANÇA (SERVER-SIDE):
+      // Antes de iniciar a transação, verifica no banco se já atingiu o limite para esta data.
+      // Isso previne que condições de corrida permitam exceder o limite de 60 vagas.
+      const qVerificacao = query(
+        collection(db, AGENDAMENTOS_COLLECTION), 
+        where('dataAgendamento', '==', agendamento.dataAgendamento)
+      );
+      
+      const snapshotVerificacao = await getDocs(qVerificacao);
+      const totalExistente = snapshotVerificacao.size;
+
+      if (totalExistente >= CONFIG.LIMITE_VAGAS_POR_DIA) {
+        throw new Error(`As vagas para o dia ${agendamento.dataAgendamento} esgotaram (Total: ${totalExistente}). Por favor, escolha outra data.`);
+      }
+
       let agendamentoSalvo: Agendamento | null = null;
 
       await runTransaction(db, async (transaction) => {
