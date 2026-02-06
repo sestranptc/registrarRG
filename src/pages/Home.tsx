@@ -449,7 +449,7 @@ export const Home: React.FC = () => {
 
       <Footer />
       
-      {/* PAINEL DE DEBUG TEMPORÁRIO - REMOVER DEPOIS */}
+      {/* PAINEL DE DEBUG TEMPORÁRIO - REMOVER DEPOIS - BUILD 06/02 16:XX */}
       <div className="fixed bottom-0 left-0 right-0 bg-black/90 text-white p-2 text-xs z-50 font-mono border-t border-white/20">
         <div className="max-w-7xl mx-auto flex flex-wrap gap-4 justify-center items-center">
           <div className="flex flex-col">
