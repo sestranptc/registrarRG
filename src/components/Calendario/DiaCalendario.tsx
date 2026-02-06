@@ -48,7 +48,7 @@ export const DiaCalendario: React.FC<DiaCalendarioProps> = ({
       classes += 'bg-green-600 text-white shadow-lg ';
     } else if (ehDiaDisponivel && vagasRestantes > 0) {
       classes += 'bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer ';
-    } else if (ehDiaDisponivel && vagasRestantes === 0) {
+    } else if (ehDiaDisponivel && vagasRestantes <= 0) {
       classes += 'bg-red-100 text-red-800 cursor-not-allowed ';
     } else {
       // Dias úteis não disponíveis (ou fins de semana não disponíveis que caíram aqui por algum motivo)
@@ -67,7 +67,7 @@ export const DiaCalendario: React.FC<DiaCalendarioProps> = ({
     // Removemos a restrição de fim de semana para permitir sábados
     if (!ehDiaDisponivel || ehDiaPassado) return null;
     
-    if (vagasRestantes === 0) {
+    if (vagasRestantes <= 0) {
       return <div className="w-2 h-2 bg-red-500 rounded-full mt-1"></div>;
     } else if (vagasRestantes <= 10) {
       return <div className="w-2 h-2 bg-yellow-500 rounded-full mt-1"></div>;
@@ -88,7 +88,7 @@ export const DiaCalendario: React.FC<DiaCalendarioProps> = ({
     <button
       ref={diaRef}
       onClick={aoClicarDia}
-      disabled={ehDiaPassado || !ehDiaDisponivel || vagasRestantes === 0}
+      disabled={ehDiaPassado || !ehDiaDisponivel || vagasRestantes <= 0}
       className={obterClasseDia()}
     >
       <span>{data.getDate()}</span>

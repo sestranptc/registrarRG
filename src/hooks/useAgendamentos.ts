@@ -220,7 +220,7 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
 
   const obterVagasRestantes = (data: string): number => {
     const agendamentosDoDia = obterAgendamentosPorData(data);
-    return limiteVagas - agendamentosDoDia.length;
+    return Math.max(0, limiteVagas - agendamentosDoDia.length);
   };
 
   const gerarProximaSenha = (): number => {
