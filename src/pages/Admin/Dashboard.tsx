@@ -813,6 +813,23 @@ export const Dashboard: React.FC = () => {
             </div>
             
             <div className="space-y-4">
+              <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-4">
+                <label className="block text-sm font-bold text-blue-700 mb-1">Número da Senha</label>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-blue-600">#</span>
+                  <input
+                    type="number"
+                    min="1"
+                    value={agendamentoEditando.senha}
+                    onChange={(e) => setAgendamentoEditando({...agendamentoEditando, senha: Number(e.target.value)})}
+                    className="w-24 bg-white border border-blue-200 rounded-lg px-3 py-2 text-xl font-bold text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  />
+                  <span className="text-xs text-blue-400 ml-2 max-w-[200px] leading-tight">
+                    Ajuste manualmente para corrigir duplicidades ou reordenar a fila.
+                  </span>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Nome Completo</label>
                 <input
@@ -869,7 +886,8 @@ export const Dashboard: React.FC = () => {
                       nome: agendamentoEditando.nome,
                       cpf: agendamentoEditando.cpf,
                       telefone: agendamentoEditando.telefone,
-                      email: agendamentoEditando.email
+                      email: agendamentoEditando.email,
+                      senha: agendamentoEditando.senha
                     });
                     setAgendamentoEditando(null);
                   }
