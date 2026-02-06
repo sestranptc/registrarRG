@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { useCalendario } from '../../hooks/useCalendario';
 import { useAgendamentos } from '../../hooks/useAgendamentos';
+import { useConfig } from '../../hooks/useConfig';
 import { DiaCalendario } from './DiaCalendario';
 import { ContadorVagas } from './ContadorVagas';
 import { toLocalISOString } from '../../utils/dateUtils';
@@ -13,6 +14,7 @@ interface CalendarioProps {
 export const Calendario: React.FC<CalendarioProps> = ({ aoSelecionarData }) => {
   const { mesAtual, mudarMes, obterDiasDoMes, ehDiaDisponivel, ehDiaPassado, ehFimDeSemana } = useCalendario();
   const { obterVagasRestantes } = useAgendamentos();
+  const { config } = useConfig();
   const [dataSelecionada, setDataSelecionada] = useState<string | null>(null);
   const calendarioRef = useRef<HTMLDivElement>(null);
 
@@ -101,13 +103,12 @@ export const Calendario: React.FC<CalendarioProps> = ({ aoSelecionarData }) => {
           
           const ehDiaAtual = data.toDateString() === hoje.toDateString();
           
-          // Lógica para travar dias específicos como esgotados
-          const diasBloqueados = ['2026-02-07', '2026-02-14'];
+          // Usa a configuração dinâmica para o limite de vagas
+          const limiteVagas = config.limiteVagasPorDia;
           let vagasRestantes = obterVagasRestantes(dataString);
           
-          if (diasBloqueados.includes(dataString)) {
-            vagasRestantes = 0;
-          }
+          // Se precisar bloquear dias específicos via código, faça aqui, mas evite hardcodes se possível.
+          // Atualmente removido bloqueio hardcoded para respeitar configurações do admin.
           
           return (
             <DiaCalendario
@@ -118,7 +119,7 @@ export const Calendario: React.FC<CalendarioProps> = ({ aoSelecionarData }) => {
               ehDiaPassado={ehDiaPassado(data)}
               ehFimDeSemana={ehFimDeSemana(data)}
               vagasRestantes={vagasRestantes}
-              totalVagas={60}
+              totalVagas={limiteVagas}
               estaSelecionado={dataSelecionada === dataString}
               aoClicar={handleSelecionarData}
             />
@@ -129,7 +130,7 @@ export const Calendario: React.FC<CalendarioProps> = ({ aoSelecionarData }) => {
       <ContadorVagas
         dataSelecionada={dataSelecionada}
         vagasRestantes={dataSelecionada ? obterVagasRestantes(dataSelecionada) : 0}
-        totalVagas={60}
+        totalVagas={config.limiteVagasPorDia}
       />
 
       <div className="mt-4 flex items-center justify-center space-x-4 text-sm">

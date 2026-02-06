@@ -26,9 +26,7 @@ export const useCalendario = () => {
     // Se houver regras, apenas essas datas são mostradas (respeitando a janela de antecedência).
     // Se não houver regras, NENHUMA data é mostrada.
     
-    // Hardcode: Forçar datas 07/02/2026 e 14/02/2026 como disponíveis
-    const datasForcadas = ['2026-02-07', '2026-02-14'];
-    const regrasAtivas = new Set([...regras, ...datasForcadas]);
+    const regrasAtivas = new Set(regras);
     const regrasArray = Array.from(regrasAtivas);
 
     if (regrasArray.length > 0) {

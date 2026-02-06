@@ -65,7 +65,7 @@ export const Home: React.FC = () => {
         <div className="text-center mb-12">
           <HeroAnimation
             titulo="Agendamento de RG - Prefeitura de Patrocínio-MG"
-            subtitulo="Agende sua emissão de RG de forma rápida e prática. Sistema com limite de 60 atendimentos por dia."
+            subtitulo={`Agende sua emissão de RG de forma rápida e prática. Sistema com limite de ${config.limiteVagasPorDia} atendimentos por dia.`}
           />
 
 
@@ -85,7 +85,7 @@ export const Home: React.FC = () => {
                       />
                     </svg>
                   </div>
-                  <div className="text-4xl font-bold">60</div>
+                  <div className="text-4xl font-bold">{config.limiteVagasPorDia}</div>
                   <div className="text-sm opacity-90 text-center">Vagas por dia</div>
                 </div>
               </div>
@@ -102,7 +102,7 @@ export const Home: React.FC = () => {
                       />
                     </svg>
                   </div>
-                  <div className="text-4xl font-bold">1-60</div>
+                  <div className="text-4xl font-bold">1-{config.limiteVagasPorDia}</div>
                   <div className="text-sm opacity-90 text-center">Senhas disponíveis</div>
                 </div>
               </div>

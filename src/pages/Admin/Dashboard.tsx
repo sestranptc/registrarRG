@@ -132,7 +132,7 @@ export const Dashboard: React.FC = () => {
     const doc = new jsPDF();
 
     doc.setFontSize(16);
-    doc.text(`Lista de Agendamentos - ${new Date(dataFiltro).toLocaleDateString('pt-BR')}`, 14, 15);
+    doc.text(`Lista de Agendamentos - ${new Date(dataFiltro + 'T12:00:00').toLocaleDateString('pt-BR')}`, 14, 15);
     
     doc.setFontSize(10);
     doc.text(`Total: ${agendamentosFiltrados.length} | Compareceram: ${compareceram}`, 14, 22);

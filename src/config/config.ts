@@ -1,7 +1,7 @@
 export const CONFIG = {
   // Configuração do EmailJS (Produção)
   // Última verificação de deploy: 03/02/2026
-  LIMITE_VAGAS_POR_DIA: 60,
+  LIMITE_VAGAS_POR_DIA: 16,
   SENHA_MINIMA: 1,
   SENHA_MAXIMA: 100,
   DIAS_ANTECEDENCIA_MINIMA: 0,

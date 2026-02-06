@@ -27,8 +27,19 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
   const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
   const [senhaAtual, setSenhaAtual] = useState<number>(1);
   const [loading, setLoading] = useState(true);
+  const [limiteVagas, setLimiteVagas] = useState<number>(CONFIG.LIMITE_VAGAS_POR_DIA);
 
   useEffect(() => {
+    // Escutar configurações em tempo real
+    const unsubscribeConfig = onSnapshot(doc(db, 'configuracoes', 'geral'), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (typeof data.limiteVagasPorDia === 'number') {
+          setLimiteVagas(data.limiteVagasPorDia);
+        }
+      }
+    });
+
     // Escutar agendamentos em tempo real
     // Otimização: Por padrão, carregar apenas agendamentos de hoje em diante para economizar leituras
     let q;
@@ -73,6 +84,7 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
     });
 
     return () => {
+      unsubscribeConfig();
       unsubscribeAgendamentos();
       unsubscribeCounter();
     };
@@ -80,6 +92,11 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
 
   const salvarAgendamento = async (agendamento: Agendamento) => {
     try {
+      // 0. Obter limite de vagas atualizado diretamente do banco para garantir integridade
+      // (caso o state ainda não tenha atualizado ou para evitar condições de corrida com configurações antigas)
+      const configDoc = await getDoc(doc(db, 'configuracoes', 'geral'));
+      const limiteAtual = configDoc.exists() ? (configDoc.data().limiteVagasPorDia || CONFIG.LIMITE_VAGAS_POR_DIA) : CONFIG.LIMITE_VAGAS_POR_DIA;
+
       // VERIFICAÇÃO DE SEGURANÇA (SERVER-SIDE):
       // Antes de iniciar a transação, verifica no banco se já atingiu o limite para esta data.
       // Isso previne que condições de corrida permitam exceder o limite de 60 vagas.
@@ -91,8 +108,27 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
       const snapshotVerificacao = await getDocs(qVerificacao);
       const totalExistente = snapshotVerificacao.size;
 
-      if (totalExistente >= CONFIG.LIMITE_VAGAS_POR_DIA) {
+      if (totalExistente >= limiteAtual) {
         throw new Error(`As vagas para o dia ${agendamento.dataAgendamento} esgotaram (Total: ${totalExistente}). Por favor, escolha outra data.`);
+      }
+
+      // VERIFICAR DUPLICIDADE DE CPF (SERVER-SIDE)
+      // Impede que o mesmo CPF tenha mais de um agendamento ativo (hoje ou futuro)
+      const hoje = toLocalISOString(new Date());
+      const qCpf = query(
+        collection(db, AGENDAMENTOS_COLLECTION),
+        where('cpf', '==', agendamento.cpf)
+      );
+      
+      const snapshotCpf = await getDocs(qCpf);
+      const temAgendamentoFuturo = snapshotCpf.docs.some(doc => {
+        const dados = doc.data();
+        // Verifica se existe agendamento para hoje ou futuro
+        return dados.dataAgendamento >= hoje;
+      });
+
+      if (temAgendamentoFuturo) {
+        throw new Error(`O CPF ${agendamento.cpf} já possui um agendamento ativo/futuro. Não é permitido agendar novamente.`);
       }
 
       let agendamentoSalvo: Agendamento | null = null;
@@ -171,7 +207,7 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
 
   const verificarDisponibilidade = (data: string): boolean => {
     const agendamentosDoDia = obterAgendamentosPorData(data);
-    return agendamentosDoDia.length < CONFIG.LIMITE_VAGAS_POR_DIA;
+    return agendamentosDoDia.length < limiteVagas;
   };
 
   const verificarAgendamentoExistente = (cpf: string): boolean => {
@@ -184,7 +220,7 @@ export const useAgendamentos = (apenasFuturos: boolean = true) => {
 
   const obterVagasRestantes = (data: string): number => {
     const agendamentosDoDia = obterAgendamentosPorData(data);
-    return CONFIG.LIMITE_VAGAS_POR_DIA - agendamentosDoDia.length;
+    return limiteVagas - agendamentosDoDia.length;
   };
 
   const gerarProximaSenha = (): number => {
