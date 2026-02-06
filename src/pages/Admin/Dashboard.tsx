@@ -46,7 +46,7 @@ export const Dashboard: React.FC = () => {
   const [dataFiltro, setDataFiltro] = useState(toLocalISOString(new Date()));
   const [mostrarTodos, setMostrarTodos] = useState(false);
   const [termoBusca, setTermoBusca] = useState('');
-  const [ordenacao, setOrdenacao] = useState<{ campo: 'horario' | 'nome', direcao: 'asc' | 'desc' }>({ campo: 'horario', direcao: 'asc' });
+  const [ordenacao, setOrdenacao] = useState<{ campo: 'horario' | 'nome' | 'senha', direcao: 'asc' | 'desc' }>({ campo: 'senha', direcao: 'asc' });
   
   // Edit & Delete State
   const [agendamentoEditando, setAgendamentoEditando] = useState<Agendamento | null>(null);
@@ -81,6 +81,12 @@ export const Dashboard: React.FC = () => {
     ag.nome.toLowerCase().includes(termoBusca.toLowerCase()) ||
     ag.cpf.includes(termoBusca)
   ).sort((a, b) => {
+    if (ordenacao.campo === 'senha') {
+      return ordenacao.direcao === 'asc' 
+        ? a.senha - b.senha
+        : b.senha - a.senha;
+    }
+
     if (ordenacao.campo === 'nome') {
       return ordenacao.direcao === 'asc' 
         ? a.nome.localeCompare(b.nome)
@@ -104,7 +110,7 @@ export const Dashboard: React.FC = () => {
       : b.horario.localeCompare(a.horario);
   });
 
-  const handleSort = (campo: 'horario' | 'nome') => {
+  const handleSort = (campo: 'horario' | 'nome' | 'senha') => {
     if (ordenacao.campo === campo) {
       setOrdenacao(prev => ({ ...prev, direcao: prev.direcao === 'asc' ? 'desc' : 'asc' }));
     } else {
@@ -362,7 +368,19 @@ export const Dashboard: React.FC = () => {
                           </div>
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Contato</th>
-                        <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Senha</th>
+                        <th 
+                          onClick={() => handleSort('senha')}
+                          className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-50 transition-colors group"
+                        >
+                          <div className="flex items-center gap-2">
+                            Senha
+                            {ordenacao.campo === 'senha' ? (
+                              ordenacao.direcao === 'asc' ? <ArrowUp className="w-4 h-4 text-blue-500" /> : <ArrowDown className="w-4 h-4 text-blue-500" />
+                            ) : (
+                              <ArrowUpDown className="w-4 h-4 text-slate-400 opacity-0 group-hover:opacity-50" />
+                            )}
+                          </div>
+                        </th>
                         <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Status de Presença</th>
                         <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Ações</th>
                       </tr>
