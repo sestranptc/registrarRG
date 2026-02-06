@@ -100,7 +100,14 @@ export const Calendario: React.FC<CalendarioProps> = ({ aoSelecionarData }) => {
           const dataString = `${ano}-${mes}-${dia}`;
           
           const ehDiaAtual = data.toDateString() === hoje.toDateString();
-          const vagasRestantes = obterVagasRestantes(dataString);
+          
+          // Lógica para travar dias específicos como esgotados
+          const diasBloqueados = ['2026-02-07', '2026-02-14'];
+          let vagasRestantes = obterVagasRestantes(dataString);
+          
+          if (diasBloqueados.includes(dataString)) {
+            vagasRestantes = 0;
+          }
           
           return (
             <DiaCalendario
